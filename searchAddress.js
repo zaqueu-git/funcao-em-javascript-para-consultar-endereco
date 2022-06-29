@@ -1,18 +1,14 @@
+document.addEventListener("DOMContentLoaded", searchAddress1);
+
 function searchAddress1() {
-    let formAddressTag = document.querySelector('.js-form-address-tag');
-
-    if (!formAddressTag) {
-        return false;
-    }
-
-    let allTag = formAddressTag.querySelectorAll('.js-all-tag');
-    let zipCodeTag = formAddressTag.querySelector('.js-zip-code-tag');
-    let roadTag = formAddressTag.querySelector('.js-road-tag');
-    let complementTag = formAddressTag.querySelector('.js-complement-tag');
-    let districtTag = formAddressTag.querySelector('.js-district-tag');
-    let cityTag = formAddressTag.querySelector('.js-city-tag');
-    let stateTag = formAddressTag.querySelector('.js-state-tag');
-    let ibgeCodeTag = formAddressTag.querySelector('.js-ibge-code-tag');
+    let allTag = document.querySelectorAll('.js-address-all-tag');
+    let zipCodeTag = document.querySelector('.js-address-zip-code-tag');
+    let roadTag = document.querySelector('.js-address-road-tag');
+    let complementTag = document.querySelector('.js-address-complement-tag');
+    let districtTag = document.querySelector('.js-address-district-tag');
+    let cityTag = document.querySelector('.js-address-city-tag');
+    let stateTag = document.querySelector('.js-address-state-tag');
+    let ibgeCodeTag = document.querySelector('.js-address-ibge-code-tag');
 
     if (zipCodeTag) {
         zipCodeTag.addEventListener('keyup', searchHandler);
