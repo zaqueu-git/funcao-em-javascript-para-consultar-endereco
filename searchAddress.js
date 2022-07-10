@@ -1,5 +1,3 @@
-document.addEventListener("DOMContentLoaded", searchAddress1);
-
 function searchAddress1() {
     let allTag = document.querySelectorAll('.js-address-all-tag');
     let zipCodeTag = document.querySelector('.js-address-zip-code-tag');
@@ -12,34 +10,53 @@ function searchAddress1() {
 
     if (zipCodeTag) {
         zipCodeTag.addEventListener('keyup', searchHandler);
+    } else {
+        return console.log("zipCodeTag not found");
+    }
+
+    function setTagValue(tag, newValue, readOnlyStatus) {
+        if (!tag) {
+            return tag + " not found";
+        }
+        
+        tag.value = "";
+        disableTagReadOnly(tag);
+
+        if (newValue) {
+            tag.value = newValue;
+        }
+
+        if (readOnlyStatus) {
+            return enableTagReadOnly(tag);
+        }
+    }
+
+    function disableTagReadOnly(tag) {
+        tag.readOnly = false;
+    }
+
+    function enableTagReadOnly(tag) {
+        tag.readOnly = true;
     }
 
     function buildHandler(data) {
         let fields = [];
 
-        fields.push({tag: roadTag, value: data.logradouro});
-        fields.push({tag: complementTag, value: data.complemento});
-        fields.push({tag: districtTag, value: data.bairro});
-        fields.push({tag: cityTag, value: data.localidade});
-        fields.push({tag: stateTag, value: data.uf});
-        fields.push({tag: ibgeCodeTag, value: data.ibge});
+        fields.push({tag: roadTag, value: data.logradouro, readOnly: true});
+        fields.push({tag: complementTag, value: data.complemento, readOnly: false});
+        fields.push({tag: districtTag, value: data.bairro, readOnly: true});
+        fields.push({tag: cityTag, value: data.localidade, readOnly: true});
+        fields.push({tag: stateTag, value: data.uf, readOnly: true});
+        fields.push({tag: ibgeCodeTag, value: data.ibge, readOnly: true});
 
         fields.forEach((object) => {
-            if (!object.tag) {
-                return false;
-            }
-    
-            if (object.value) {
-                object.tag.value = object.value;
-            } else {
-                object.tag.value = "";
-            }
+            setTagValue(object.tag, object.value, object.readOnly);
         });     
     }
 
     function cleanHandler() {
         allTag.forEach((tag) => {
-            tag.value = "";
+            setTagValue(tag, "", false);
         });
     }
 
@@ -50,12 +67,23 @@ function searchAddress1() {
             return cleanHandler();
         }
 
-        fetch("https://viacep.com.br/ws/"+ zipCodeTag.value +"/json/", "GET")
-        .then(response => {
-            response.json().then(data => {
+        let zipCodeValue = zipCodeTag.value.replace("-", "");
+
+        let url = "https://viacep.com.br/ws/"+ zipCodeValue +"/json/";
+        let method = "GET";
+    
+        let requestOptions = {
+          method: method,
+        };
+    
+        fetch(url, requestOptions)
+          .then((response) => {
+            response.json().then((data) => {
                 return buildHandler(data);
             });
-        })
-        .catch(error => console.log('error', error));
+          })
+          .catch((error) => console.log("error fetch", error));
     }
 }
+
+searchAddress1();
